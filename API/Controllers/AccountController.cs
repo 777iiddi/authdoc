@@ -1,4 +1,4 @@
-﻿using API.Data;
+using API.Data;
 using API.Interfaces;
 using API.models;
 using API.models.ViewModels;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -48,13 +49,14 @@ namespace API.Controllers
                 return Unauthorized("Invalid username or password.");
             }
             //HttpContent.Session.setString("username", user.UserName); // Store user ID in session
-            var token = _tokenService.createToken(user); // Generate JWT token
+            var roles = await _UserManager.GetRolesAsync(user);
+            var token = await _tokenService.createToken(user); // Generate JWT token
             return Ok(new
             {
                 message = "Login successful",
                 token = token,
                 userName = user.UserName,
-               
+                roles = roles
             });
         }
         [HttpPost("register")]
@@ -79,9 +81,18 @@ namespace API.Controllers
             var result = await _UserManager.CreateAsync(User, model.Password);
             if (!result.Succeeded)
             {
-                return BadRequest(new { message = "invalide email password and password" });
+                return BadRequest(result.Errors);
             }
-            return Ok ((new { message = "User created successfully", userName = User.UserName, role = model.Role }));
+
+            if (!string.IsNullOrEmpty(model.Role))
+            {
+                if (await _RoleManager.RoleExistsAsync(model.Role))
+                {
+                    await _UserManager.AddToRoleAsync(User, model.Role);
+                }
+            }
+
+            return Ok(new { message = "User created successfully", userName = User.UserName, role = model.Role });
         }
 
 

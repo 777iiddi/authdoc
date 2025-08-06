@@ -13,12 +13,23 @@ const Login:react.FC=()=>{
             const response= await login(email, password);
             localStorage.setItem('token',response.token);
             localStorage.setItem('userName',JSON.stringify(response.userName));
-            navigate('./admin/Dashboard');
+            localStorage.setItem('roles', JSON.stringify(response.roles));
+
+            const primaryRole = response.roles[0];
+
+            if (primaryRole === 'Doctor') {
+                navigate('/doctor/appointments');
+            } else if (primaryRole === 'Patient') {
+                navigate('/patient/offers');
+            }
+            else {
+                navigate('/Dashboard');
+            }
         }
         catch(error: any){
             setError(error.message || "Login failed");
-        
-    } 
+
+    }
 
     };
 
