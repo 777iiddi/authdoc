@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using API.Data;
 using API.DbInistializer;
@@ -37,7 +37,7 @@ namespace API.DbInistializer
             }
 
             // 2️⃣ Seed des rôles
-            string[] roles = { Helper.Admin, Helper.Doctor, Helper.user };
+            string[] roles = { Helper.Admin, Helper.Doctor, Helper.Patient };
             foreach (var role in roles)
             {
                 var exists = _roleManager.RoleExistsAsync(role).GetAwaiter().GetResult();
@@ -93,5 +93,5 @@ namespace API.DbInistializer
         }
     }
 
-  
+
 }

@@ -7,6 +7,7 @@ const Api='https://localhost:7264/api/Account';
 interface authResponse {
     token: string;
     userName: string;
+    roles: string[];
 }
 export const login= async (email:string ,password :string):Promise<authResponse>=>{
     try{
@@ -21,7 +22,7 @@ export const login= async (email:string ,password :string):Promise<authResponse>
         }
     };
 
-    export const register =async (userName:string,email:string,password:string,confirmPassword:string,role:string):Promise<authResponse>=>{
+    export const register =async (name:string,email:string,password:string,confirmPassword:string,role:string):Promise<authResponse>=>{
         try{
             const response= await axios.post<authResponse>(`${Api}/Register`,{
                 name,
@@ -34,13 +35,10 @@ export const login= async (email:string ,password :string):Promise<authResponse>
         catch(error: any){
             throw error.response?.data || 'Registration failed';
         }
-        
+
     } ;
     export const logout =():void=>{//logout a pas besoin d une promise
         localStorage.removeItem('token');
         localStorage.removeItem('userName');
-        
+
     } ;
-    
-
-

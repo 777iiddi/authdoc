@@ -1,10 +1,11 @@
-﻿using API.models;
+using API.models;
+using System.Threading.Tasks;
 
 namespace API.Interfaces
 {
     public interface ItokenService //interface for the token service
     {
-        String createToken(ApplicationUser user); //method to create a token for the user
+        Task<string> createToken(ApplicationUser user); //method to create a token for the user
 
     }
 }
